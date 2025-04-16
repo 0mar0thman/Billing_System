@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    الاقسام
+    البنوك
 @stop
 
 {{-- <head>
@@ -21,7 +21,7 @@
         <div class="my-auto">
             <div class="d-flex">
                 <h4 class="content-title mb-0 my-auto">الاعدادات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    الاقسام</span>
+                    اضافة بنك</span>
             </div>
         </div>
     </div>
@@ -78,7 +78,7 @@
                             <div class="d-flex align-items-center gap-3 flex-wrap w-100">
                                 <!-- زر إضافة قسم (على الشمال) -->
                                 <a class="modal-effect btn btn-outline-primary flex-shrink-0 ms-auto"
-                                    data-effect="effect-scale" data-toggle="modal" href="#modaldemo8">اضافة قسم</a>
+                                    data-effect="effect-scale" data-toggle="modal" href="#modaldemo8">اضافة بنك</a>
 
                                 <!-- رسالة نجاح -->
                                 @if (session()->has('Add'))
@@ -110,7 +110,7 @@
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0 text-center">#</th>
-                                    <th class="border-bottom-0 text-center">اسم القسم</th>
+                                    <th class="border-bottom-0 text-center">اسم البنك</th>
                                     <th class="border-bottom-0 text-center">الوصف</th>
                                     <th class="border-bottom-0 text-center">المضيف</th>
                                     <th class="border-bottom-0 text-center"></th>
@@ -167,7 +167,7 @@
                                 <input class="form-control" id="exampleFormControlInput1" name="section_name"
                                     placeholder="ادخل اسم القسم">
                             </div>
-                            <div class="form-group"> 
+                            <div class="form-group">
                                 <label for="exampleFormControlTextarea1">الوصف</label>
                                 <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3"></textarea>
                                 <small id="emailHelp" class="form-text text-muted mb-3">ملاحظات حول القسم.</small>
@@ -193,7 +193,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">تعديل القسم</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">تعديل البنك</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

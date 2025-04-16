@@ -40,7 +40,7 @@
 @section('content')
 				<!-- row -->
 				<div class="row row-sm">
-					<div class="col-md-12 col-xl-12">
+					<div class="col-md-12 col-xl-12"> 
 						<div class=" main-content-body-invoice">
 							<div class="card card-invoice">
 								<div class="card-body">

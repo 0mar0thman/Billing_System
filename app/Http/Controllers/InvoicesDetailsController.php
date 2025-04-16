@@ -77,13 +77,5 @@ class InvoicesDetailsController extends Controller
         }
         return redirect()->back()->with('error', 'لم يتم العثور على الملف');
     }
-    // public function open_file($invoice_number, $file_name)
-    // {
-    //     $path = public_path('Attachments/' . $invoice_number . '/' . $file_name);
 
-    //     if (file_exists($path)) {
-    //         return response()->file($path);
-    //     }
-    //     return response()->json(['error' => 'الملف غير موجود'], 404);
-    // }
 }

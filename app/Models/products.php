@@ -11,9 +11,13 @@ class products extends Model
     protected $fillable = [
         'product_name',
         'description',
-        'section_id'
+        'section_id',
+        'phone',
+        'address',
+        'email',
     ];
-    public function section() {
+    public function section()
+    {
         return $this->belongsTo(sections::class);
     }
 }

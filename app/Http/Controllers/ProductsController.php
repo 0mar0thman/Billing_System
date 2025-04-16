@@ -44,6 +44,9 @@ class ProductsController extends Controller
             'product_name' => $request->product_name,
             'description' => $request->description,
             'section_id' => $request->section_id,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
         ]);
         session()->flash('Add', 'تم اضافة المنتج بنجاح');
         return redirect('/products');

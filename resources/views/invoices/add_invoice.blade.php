@@ -11,6 +11,7 @@
     <!--Internal  TelephoneInput css-->
     <link rel="stylesheet" href="{{ URL::asset('assets/plugins/telephoneinput/telephoneinput-rtl.css') }}">
 @endsection
+
 @section('title')
     اضافة فاتورة
 @stop
@@ -20,15 +21,15 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الفواتير</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    اضافة فاتورة</span>
+                <h4 class="content-title mb-0 my-auto">الفواتير</h4>
+                <span class="text-muted mt-1 tx-13 mr-2 mb-0">/ اضافة فاتورة</span>
             </div>
         </div>
     </div>
     <!-- breadcrumb -->
 @endsection
-@section('content')
 
+@section('content')
     @if (session()->has('Add'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>{{ session()->get('Add') }}</strong>
@@ -37,28 +38,27 @@
             </button>
         </div>
     @endif
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <!-- row -->
     <div class="row">
-
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-body">
                     <form action="{{ route('invoices.store') }}" method="post" enctype="multipart/form-data"
                         autocomplete="off">
-                        {{ csrf_field() }}
-                        {{-- 1 --}}
+                        @csrf
 
+                        <!-- الصف الأول -->
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">رقم الفاتورة</label>
@@ -67,7 +67,7 @@
                             </div>
 
                             <div class="col">
-                                <label>تاريخ الفاتورة</label>
+                                <label>تاريخ الاصدار</label>
                                 <input class="form-control fc-datepicker" name="invoice_Date" placeholder="YYYY-MM-DD"
                                     type="text" value="{{ date('Y-m-d') }}" required>
                             </div>
@@ -75,86 +75,80 @@
                             <div class="col">
                                 <label>تاريخ الاستحقاق</label>
                                 <input class="form-control fc-datepicker" name="Due_date" placeholder="YYYY-MM-DD"
-                                    type="text" required>
+                                    type="text" value="{{ date('Y-m-d', strtotime('+3 months')) }}" required>
                             </div>
-
                         </div>
 
-                        {{-- 2 --}}
+                        <!-- الصف الثاني -->
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="inputName" class="control-label">القسم</label>
-                                <select name="Section" class="form-control SlectBox" onclick="console.log($(this).val())"
-                                    onchange="console.log('change is firing')">
-                                    <!--placeholder-->
-                                    <option value="" selected disabled>حدد القسم</option>
+                                <label for="inputName" class="control-label">اسم البنك</label>
+                                <select name="Section" class="form-control SlectBox" id="Section" required>
+                                    <option value="" selected disabled>حدد البنك</option>
                                     @foreach ($sections as $section)
-                                        <option value="{{ $section->id }}"> {{ $section->section_name }}</option>
+                                        <option value="{{ $section->id }}">{{ $section->section_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="col">
-                                <label for="inputName" class="control-label">المنتج</label>
-                                <select id="product" name="product" class="form-control">
+                                <label for="inputName" class="control-label">اسم العميل</label>
+                                <select id="product" name="product" class="form-control" required>
+                                    <option value="" selected disabled>حدد العميل</option>
+                                    @isset($products)
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}" data-email="{{ $product->email ?? '' }}"
+                                                data-address="{{ $product->address ?? '' }}"
+                                                data-phone="{{ $product->phone ?? '' }}">
+                                                {{ $product->product_name ?? 'عميل بدون اسم' }}
+                                            </option>
+                                        @endforeach
+                                    @endisset
                                 </select>
                             </div>
 
-                            <div class="col ">
-                                <label for="inputName" class="control-label">مبلغ التحصيل ( يجب ان يزيد عن
-                                    {{ $SittingsInvoices->last()->Amount_collection ?? 0 }} لتخطي الخصم )</label>
-                                <input type="hidden" class="form-control" id="inputName" name="Amount_collection_value"
+                            <div class="col">
+                                <label for="inputName" class="control-label">مبلغ التحصيل (يجب ان يزيد عن
+                                    {{ $SittingsInvoices->last()->Amount_collection ?? 0 }} لتخطي الخصم)</label>
+                                <input type="hidden" name="Amount_collection_value"
                                     value="{{ $SittingsInvoices->last()->Amount_collection ?? 0 }}">
-
                                 <input type="number" class="form-control" id="Amount_collection" name="Amount_collection"
-                                    oninput="calculateCommission()"
-                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46;">
-
+                                    oninput="calculateCommissionAndVAT()" required>
                             </div>
                         </div>
 
-
-                        {{-- 3 --}}
-
+                        <!-- الصف الثالث -->
                         <div class="row mt-3">
-
                             <div class="col">
                                 <label for="inputName" class="control-label">مبلغ العمولة
                                     ({{ $SittingsInvoices->last()->Amount_Commission ?? 0 }}%)</label>
-                                <input type="hidden" class="form-control" id="inputName" name="Amount_Commission_value"
+                                <input type="hidden" name="Amount_Commission_value"
                                     value="{{ $SittingsInvoices->last()->Amount_Commission ?? 0 }}">
-
-                                <input type="number" class="form-control form-control-lg" id="Amount_Commission"
-                                    name="Amount_Commission" title="يرجي ادخال مبلغ العمولة " readonly>
-
+                                <input type="number" class="form-control" id="Amount_Commission" name="Amount_Commission"
+                                    readonly>
                             </div>
 
                             <div class="col">
                                 <label for="inputName" class="control-label">الخصم
                                     ({{ $SittingsInvoices->last()->Discount_Commission ?? 0 }}%)</label>
-                                <input type="hidden" class="form-control" id="inputName"
-                                    name="Discount_Commission_value"
+                                <input type="hidden" name="Discount_Commission_value"
                                     value="{{ $SittingsInvoices->last()->Discount_Commission ?? 0 }}">
-                                <input type="number" class="form-control form-control-lg" id="Discount"
-                                    name="Discount_Commission" title="يرجي ادخال مبلغ الخصم "
-                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                <input type="number" class="form-control" id="Discount" name="Discount_Commission"
                                     value="0" readonly>
                             </div>
 
                             <div class="col">
                                 <label for="inputName" class="control-label">نسبة ضريبة القيمة المضافة</label>
-                                <select name="Rate_VAT" id="Rate_VAT" class="form-control" onchange="myFunction()">
-                                    <!--placeholder-->
+                                <select name="Rate_VAT" id="Rate_VAT" class="form-control"
+                                    onchange="calculateCommissionAndVAT()" required>
                                     <option value="" selected disabled>حدد نسبة الضريبة</option>
-                                    <option value="5%">5%</option>
-                                    <option value="10%">10%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
                                 </select>
                             </div>
-
                         </div>
 
-                        {{-- 4 --}}
-
+                        <!-- الصف الرابع -->
                         <div class="row mt-3">
                             <div class="col">
                                 <label for="inputName" class="control-label">قيمة ضريبة القيمة المضافة</label>
@@ -167,41 +161,44 @@
                             </div>
                         </div>
 
-                        {{-- 5 --}}
-                        <div class="row">
+                        <!-- حقول العميل المخفية -->
+                        <div class="d-none">
+                            <input type="hidden" id="email" name="email">
+                            <input type="hidden" id="address" name="address">
+                            <input type="hidden" id="phone" name="phone">
+                        </div>
+
+                        <!-- الصف الخامس -->
+                        <div class="row mt-3">
                             <div class="col">
                                 <label for="exampleTextarea">ملاحظات</label>
                                 <textarea class="form-control" id="exampleTextarea" name="note" rows="3"></textarea>
                             </div>
-                        </div><br>
-
-                        <p class="text-danger">* صيغة المرفق pdf, jpeg ,.jpg , png </p>
-                        <h5 class="card-title">المرفقات</h5>
-
-                        <div class="col-sm-12 col-md-12">
-                            <input type="file" name="pic" class="dropify"
-                                accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
-                        </div><br>
-
-                        <div class="d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary">حفظ البيانات</button>
                         </div>
 
+                        <!-- المرفقات -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p class="text-danger">* صيغة المرفق pdf, jpeg, .jpg, png</p>
+                                <h5 class="card-title">المرفقات</h5>
+                                <input type="file" name="pic" class="dropify"
+                                    accept=".pdf,.jpg,.png,image/jpeg,image/png" data-height="70" />
+                            </div>
+                        </div>
 
+                        <!-- زر الحفظ -->
+                        <div class="row mt-3">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary">حفظ البيانات</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    </div>
-
-    <!-- row closed -->
-    </div>
-    <!-- Container closed -->
-    </div>
-    <!-- main-content closed -->
 @endsection
+
 @section('js')
     <!-- Internal Select2 js-->
     <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
@@ -229,13 +226,14 @@
     <script src="{{ URL::asset('assets/js/form-elements.js') }}"></script>
 
     <script>
+        // تاريخ الاصدار
         var date = $('.fc-datepicker').datepicker({
             dateFormat: 'yy-mm-dd'
         }).val();
-    </script>
 
-    <script>
+
         $(document).ready(function() {
+            // عند تغيير القسم
             $('select[name="Section"]').on('change', function() {
                 var SectionId = $(this).val();
                 if (SectionId) {
@@ -245,60 +243,68 @@
                         dataType: "json",
                         success: function(data) {
                             $('select[name="product"]').empty();
+                            $('select[name="product"]').append(
+                                '<option value="" selected disabled>حدد العميل</option>');
+
                             $.each(data, function(key, value) {
-                                $('select[name="product"]').append('<option value="' +
-                                    value + '">' + value + '</option>');
+                                $('select[name="product"]').append(
+                                    '<option value="' + value.id + '" ' +
+                                    'data-email="' + (value.email || '') + '" ' +
+                                    'data-address="' + (value.address || '') +
+                                    '" ' +
+                                    'data-phone="' + (value.phone || '') + '">' +
+                                    (value.product_name || 'عميل بدون اسم') +
+                                    '</option>'
+                                );
                             });
                         },
+                        error: function(xhr, status, error) {
+                            console.error("AJAX Error:", status, error);
+                        }
                     });
-
-                } else {
-                    console.log('AJAX load did not work');
                 }
             });
 
+            // عند تغيير العميل لتعيين الحقول المخفية
+            $('select[name="product"]').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                $('#email').val(selectedOption.data('email') || '');
+                $('#address').val(selectedOption.data('address') || '');
+                $('#phone').val(selectedOption.data('phone') || '');
+            });
         });
-    </script>
-
-    <script>
-        document.getElementById("Amount_collection").addEventListener("input", calculateCommissionAndVAT);
-        document.getElementById("Rate_VAT").addEventListener("change", calculateCommissionAndVAT);
-
+        // حساب العمولة والضريبة
         function calculateCommissionAndVAT() {
-            var Amount_collection_value = parseFloat(document.getElementsByName("Amount_collection_value")[0].value) || 0;
-            var Amount_Commission_value = parseFloat(document.getElementsByName("Amount_Commission_value")[0].value) || 0;
-            var Discount_Commission_value = parseFloat(document.getElementsByName("Discount_Commission_value")[0].value) ||
-                0;
+            const Amount_collection_value = parseFloat($('[name="Amount_collection_value"]').val()) || 0;
+            const Amount_Commission_value = parseFloat($('[name="Amount_Commission_value"]').val()) || 0;
+            const Discount_Commission_value = parseFloat($('[name="Discount_Commission_value"]').val()) || 0;
 
-            var amountCollection = parseFloat(document.getElementById("Amount_collection").value) || 0;
-            var rateVAT = parseFloat(document.getElementById("Rate_VAT").value) || 0;
+            const amountCollection = parseFloat($('#Amount_collection').val()) || 0;
+            const rateVAT = parseFloat($('#Rate_VAT').val()) || 0;
 
-            // 1. حساب العمولة الأساسية
-            let commission = amountCollection * (Amount_Commission_value / 100);
+            // حساب العمولة الأساسية
+            const commission = amountCollection * (Amount_Commission_value / 100);
 
-            // 2. إعداد الخصم التلقائي
+            // حساب الخصم
             let discount = 0;
             if (amountCollection <= Amount_collection_value) {
-                discount = commission * (Discount_Commission_value / 100); // خصم 10% من العمولة
+                discount = commission * (Discount_Commission_value / 100);
             }
 
-            // 3. حفظ العمولة بعد الخصم
-            let commissionAfterDiscount = commission - discount;
+            // العمولة بعد الخصم
+            const commissionAfterDiscount = commission - discount;
 
-            // 4. حساب الضريبة
-            let vatValue = commissionAfterDiscount * (rateVAT / 100);
+            // حساب الضريبة
+            const vatValue = commissionAfterDiscount * (rateVAT / 100);
 
-            // 5. حساب الإجمالي
-            let total = commissionAfterDiscount + vatValue;
+            // الإجمالي
+            const total = commissionAfterDiscount + vatValue;
 
-            // 6. عرض القيم في الحقول
-            document.getElementById("Amount_Commission").value = commission.toFixed(2);
-            document.getElementById("Discount").value = discount.toFixed(2);
-            document.getElementById("Value_VAT").value = vatValue.toFixed(2);
-            document.getElementById("Total").value = total.toFixed(2);
+            // تعبئة الحقول
+            $('#Amount_Commission').val(commission.toFixed(2));
+            $('#Discount').val(discount.toFixed(2));
+            $('#Value_VAT').val(vatValue.toFixed(2));
+            $('#Total').val(total.toFixed(2));
         }
     </script>
-
-
-
 @endsection
