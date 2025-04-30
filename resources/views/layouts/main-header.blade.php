@@ -3,13 +3,13 @@
     <div class="container-fluid">
         <div class="main-header-left ">
             <div class="responsive-logo">
-                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/logo.png') }}"
-                        class="logo-1" alt="logo"></a>
-                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/logo-white.png') }}"
+                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/omar_dark_demo.png') }}"
+                        class="logo-1" style="width:100px; height: auto; opacity: 0.7; " alt="logo"></a>
+                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/omar_white_demo.png') }}"
                         class="dark-logo-1" alt="logo"></a>
-                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/favicon.png') }}"
-                        class="logo-2" alt="logo"></a>
-                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/favicon.png') }}"
+                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/omar_dark_demo.png') }}"
+                        class="logo-2" style="width:100px; height: auto; opacity: 0.7; " alt="logo"></a>
+                <a href="{{ url('/' . ($page = 'index')) }}"><img src="{{ URL::asset('assets/img/brand/omar_white_demo.png') }}"
                         class="dark-logo-2" alt="logo"></a>
             </div>
             <div class="app-sidebar__toggle" data-toggle="sidebar">
@@ -301,12 +301,12 @@
                 </div>
                 <div class="dropdown main-profile-menu nav nav-item nav-link">
                     <a class="profile-user d-flex" href=""><img alt=""
-                            src="{{ URL::asset('assets/img/faces/6.jpg') }}"></a>
+                            src="{{ URL::asset('assets/img/faces/circle-user-solid.svg') }}"></a>
                     <div class="dropdown-menu">
                         <div class="main-header-profile bg-primary p-3">
                             <div class="d-flex wd-100p">
                                 <div class="main-img-user"><img alt=""
-                                        src="{{ URL::asset('assets/img/faces/6.jpg') }}" class=""></div>
+                                        src="{{ URL::asset('assets/img/faces/circle-user-solid.svg') }}" class=""></div>
                                 <div class="mr-3 my-auto">
                                     <h6>{{ Auth::user()->name }}</h6><span>{{ Auth::user()->email }}</span>
                                 </div>

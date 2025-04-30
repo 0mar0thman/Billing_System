@@ -16,71 +16,11 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property string $name
- * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property mixed $password
- * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read int|null $tokens_count
- * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
- */
-	class User extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * 
- *
- * @property int $id
- * @property string $file_name
- * @property string $invoice_number
- * @property string $Created_by
- * @property int|null $invoice_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\invoices|null $invoice
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments query()
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereFileName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereInvoiceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereInvoiceNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoice_attachments whereUpdatedAt($value)
- */
-	class invoice_attachments extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * 
- *
- * @property int $id
- * @property string $invoice_number
  * @property string|null $invoice_Date
  * @property string|null $Due_date
- * @property string $product
- * @property string $email
- * @property string $phone
- * @property string $address
+ * @property string $product_name
+ * @property string $section_name
+ * @property int $product_id
  * @property int $section_id
  * @property string|null $Amount_collection
  * @property string $Amount_Commission
@@ -95,37 +35,41 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\sections $section
- * @method static \Illuminate\Database\Eloquent\Builder|invoices newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices query()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereAmountCollection($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereAmountCommission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereDiscountCommission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereDueDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereInvoiceDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereInvoiceNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices wherePaymentDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereProduct($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereRateVAT($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereSectionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereTotal($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereValueStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices whereValueVAT($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InvoiceAttachments> $attachments
+ * @property-read int|null $attachments_count
+ * @property-read \App\Models\Product $products
+ * @property-read \App\Models\Section $sections
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice paid()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice partial()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice unpaid()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereAmountCollection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereAmountCommission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereDiscountCommission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereDueDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereInvoiceDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice wherePaymentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereProductName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereRateVAT($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereSectionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereSectionName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereValueStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice whereValueVAT($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice withoutTrashed()
  */
-	class invoices extends \Eloquent {}
+	class Invoice extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -133,10 +77,38 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property int $id_Invoice
- * @property string $invoice_number
- * @property string $product
- * @property string $Section
+ * @property string $file_name
+ * @property string $Created_by
+ * @property int $invoice_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Invoice $invoices
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments whereFileName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments whereInvoiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceAttachments whereUpdatedAt($value)
+ */
+	class InvoiceAttachments extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string|null $product_name
+ * @property string|null $section_name
+ * @property string|null $address
+ * @property string|null $email
+ * @property string|null $phone
+ * @property int|null $invoice_id
+ * @property int|null $product_id
+ * @property int|null $section_id
  * @property string $Status
  * @property int $Value_Status
  * @property string|null $Payment_Date
@@ -144,24 +116,28 @@ namespace App\Models{
  * @property string $user
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\invoices $invoice
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details query()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereIdInvoice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereInvoiceNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details wherePaymentDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereProduct($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereSection($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_details whereValueStatus($value)
+ * @property-read \App\Models\Invoice|null $invoices
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereInvoiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails wherePaymentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereProductName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereSectionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereSectionName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceDetails whereValueStatus($value)
  */
-	class invoices_details extends \Eloquent {}
+	class InvoiceDetails extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -169,22 +145,26 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property int|null $section_id
  * @property string $Amount_collection
  * @property string $Amount_Commission
  * @property string $Discount_Commission
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings query()
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings whereAmountCollection($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings whereAmountCommission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings whereDiscountCommission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|invoices_sittings whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invoice> $invoices
+ * @property-read int|null $invoices_count
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereAmountCollection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereAmountCommission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereDiscountCommission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereSectionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceSittings whereUpdatedAt($value)
  */
-	class invoices_sittings extends \Eloquent {}
+	class InvoiceSittings extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -200,21 +180,23 @@ namespace App\Models{
  * @property int $section_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\sections $section
- * @method static \Illuminate\Database\Eloquent\Builder|products newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|products newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|products query()
- * @method static \Illuminate\Database\Eloquent\Builder|products whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereProductName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereSectionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|products whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invoice> $invoices
+ * @property-read int|null $invoices_count
+ * @property-read \App\Models\Section $sections
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereProductName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereSectionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  */
-	class products extends \Eloquent {}
+	class Product extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -227,16 +209,66 @@ namespace App\Models{
  * @property string $created_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|sections newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|sections newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|sections query()
- * @method static \Illuminate\Database\Eloquent\Builder|sections whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|sections whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|sections whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|sections whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|sections whereSectionName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|sections whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invoice> $invoices
+ * @property-read int|null $invoices_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Section newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Section newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Section query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereSectionName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereUpdatedAt($value)
  */
-	class sections extends \Eloquent {}
+	class Section extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property int $is_admin
+ * @property mixed $password
+ * @property array|null $roles_name
+ * @property string $status
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRolesName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|User withoutRole($roles, $guard = null)
+ */
+	class User extends \Eloquent {}
 }
 

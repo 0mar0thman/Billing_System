@@ -2,71 +2,105 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\InvoicesController;
-use App\Http\Controllers\SectionsController;
-use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\InvoicesSittingsController;
-use App\Http\Controllers\InvoicesDetailsController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\InvoiceSittingController;
+use App\Http\Controllers\InvoiceDetailController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InvoiceAttachmentsController;
+use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceAchiveController;
+use App\Http\Controllers\InvoiceReportController;
+use App\Http\Controllers\CustomerReportController;
+use Illuminate\Validation\Rules\Can;
 
-
+// الصفحة الرئيسية وتوجيهات المصادقة
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect('/home'); // لو مسجّل دخوله يروح هوم
+        return redirect('/home');
     }
-    return view('auth.login'); // غير كده يروح صفحة تسجيل الدخول
+    return view('auth.login');
 });
-
-Route::post('/home', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
-// Auth::routes(['register' => false]);
+// Auth::routes(['register' => false]); // يمكن تفعيلها لتعطيل التسجيل
 
-// ====================
-//  إعدادات الفواتير
-// ====================
-Route::prefix('invoices/sitting')->group(function () {
-    Route::get('/', [InvoicesSittingsController::class, 'index'])->name('invoices.sitting');
-    Route::get('/store', [InvoicesSittingsController::class, 'store'])->name('invoices_sittings.store');
+// المسارات العامة بعد المصادقة
+Route::middleware(['auth', 'user.active'])->group(function () {
+    // الصفحة الرئيسية
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // مسارات الفواتير
+    Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
+
+    Route::put('/invoices/update/{id}', [InvoiceController::class, 'update'])->name('invoices.update');
+
+    Route::get('/section/{id}/products', [InvoiceController::class, 'getproducts'])->name('sections.products');
+    Route::get('get-products/{id}', [InvoiceController::class, 'getProducts'])->name('get-products');
+    Route::get('getProductDetails/{id}', [InvoiceController::class, 'getProductDetails'])->name('getProductDetails');
+
+    Route::resource('invoices', InvoiceController::class);
+
+    // Route::get('/invoices', [InvoicesController::class, 'index'])->name('invoices.index');
+
+    Route::get('/edit_invoice/{id}', [InvoiceController::class, 'edit']);
+    Route::get('/Status_show/{id}', [InvoiceController::class, 'show'])->name('Status_show');
+    Route::post('/Status_Update/{id}', [InvoiceController::class, 'Status_Update'])->name('Status_Update');
+    Route::get('/invoices/print/{id}', [InvoiceController::class, 'print'])->name('invoices.print');
+
+    // أنواع الفواتير
+    Route::get('Invoice_Paid', [InvoiceController::class, 'Invoice_Paid'])->name('Invoice_Paid');
+    Route::get('Invoice_Partial', [InvoiceController::class, 'Invoice_Partial'])->name('Invoice_Partial');
+    Route::get('Invoice_UnPaid', [InvoiceController::class, 'Invoice_UnPaid'])->name('Invoice_UnPaid');
+
+
+    // مرفقات الفواتير
+    Route::resource('InvoiceAttachments', InvoiceAttachmentController::class);
+    Route::post('/InvoiceAttachments', [InvoiceAttachmentController::class, 'store'])->name('attachments.store');
+
+    // تفاصيل الفواتير
+    Route::get('/InvoicesDetails/{id}', [InvoiceDetailController::class, 'edit'])->name('invoices.details');
+    Route::delete('attachments/{id}', [InvoiceDetailController::class, 'destroy'])->name('attachments.destroy');
+
+    // إعدادات الفواتير
+    Route::prefix('invoices-sitting')->group(function () {
+        Route::get('/', [InvoiceSittingController::class, 'index'])->name('invoices.sittings');
+        Route::post('/store', [InvoiceSittingController::class, 'store'])->name('invoices_sittings_store');
+    });
+
+    // الأرشيف
+    Route::resource('Archive', InvoiceAchiveController::class);
+
+    // الأقسام
+    Route::resource('sections', SectionController::class);
+
+    // المنتجات
+    Route::resource('products', ProductController::class);
+    Route::get('export_invoices', [InvoiceController::class, 'export']);
+    Route::get('export_products', [ProductController::class, 'export']);
+
+    // إدارة المستخدمين والأدوار
+    Route::group(['middleware' => ['role:owner']], function () {
+        Route::resource('roles', RoleController::class);
+        Route::resource('users', AdminController::class);
+    });
+
+    // Route::get('invoices_report', [InvoicesReportController::class, 'index']);
+    // Route::post('Search_invoices', [InvoicesReportController::class, 'Search_invoices']);
+
+    Route::get('invoices_report', [InvoiceReportController::class, 'index'])->name('invoices.report');
+    Route::post('invoices_report/search', [InvoiceReportController::class, 'search'])->name('invoices.report.search');
+
+
+    Route::get('customers_report', [CustomerReportController::class, 'index'])->name("customers_report");
+    Route::post('Search_customers', [CustomerReportController::class, 'Search_customers'])->name('search_customers');
+    // Route::post('Search_customers', [Customers_Report::class, 'Search_customers']);
+    Route::get('/section/{id}', [CustomerReportController::class, 'getProducts'])->name('get_products');
+    // Route::get('/section/{id}', 'InvoicesController@getproducts');
+
 });
 
-// ====================
-//  الفواتير
-// ====================
-Route::get('/invoices/create', [InvoicesController::class, 'create'])->name('invoices.create');
-Route::get('/section/{id}', [InvoicesController::class, 'getproducts']); // لجلب المنتجات حسب القسم
-Route::resource('invoices', InvoicesController::class);
-Route::resource('InvoiceAttachments', InvoiceAttachmentsController::class);
-Route::get('/InvoicesDetails/{id}', [InvoicesDetailsController::class, 'edit']);
-Route::get('/edit_invoice/{id}', [InvoicesController::class, 'edit']);
-Route::get('/Status_show/{id}', [InvoicesController::class, 'show'])->name('Status_show');
-Route::post('/Status_Update/{id}', [InvoicesController::class, 'Status_Update'])->name('Status_Update');
-Route::get('Invoice_Paid',[InvoicesController::class , 'Invoice_Paid'])->name('Invoice_Paid');
-Route::get('Invoice_Partial',[InvoicesController::class , 'Invoice_Partial'])->name('Invoice_Partial');
-Route::get('Invoice_UnPaid',[InvoicesController::class , 'Invoice_UnPaid'])->name('Invoice_UnPaid');
-
-Route::get('/invoices/print/{id}', [InvoicesController::class, 'print'])->name('invoices.print');
-// ====================
-//  الارشيف
-// ====================
-Route::resource('Archive', InvoiceAchiveController::class);
-
-// ====================
-//  الأقسام
-// ====================
-Route::resource('sections', SectionsController::class);
-
-// ====================
-//  المنتجات
-// ====================
-Route::resource('products', ProductsController::class);
-
-Route::delete('attachments/{id}', [InvoicesDetailsController::class, 'destroy'])->name('attachments.destroy');
-
-// ====================
-//  صفحات ديناميكية (لـ SPA أو صفحات تحكم)
-// ====================
+// الصفحات الديناميكية (يجب أن تكون في النهاية)
 Route::get('/{page}', [AdminController::class, 'index'])->where('page', '.*');

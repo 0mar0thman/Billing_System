@@ -23,6 +23,7 @@
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-body">
+                    {{-- {{ dd($invoices) }} --}}
                     <form action="{{ route('Status_Update', ['id' => $invoices->id]) }}" method="post" autocomplete="off">
                         {{ csrf_field() }}
                         {{-- 1 --}}
@@ -30,8 +31,9 @@
                             <div class="col">
                                 <label for="inputName" class="control-label">رقم الفاتورة</label>
                                 <input type="hidden" name="invoice_id" value="{{ $invoices->id }}">
-                                <input type="text" class="form-control" id="inputName" name="invoice_number"
-                                    title="يرجي ادخال رقم الفاتورة" value="{{ $invoices->invoice_number }}" required
+
+                                <input type="text" class="form-control" id="inputName"
+                                    title="يرجي ادخال رقم الفاتورة" value="{{ $invoices->id }}" required
                                     readonly>
                             </div>
 
@@ -53,11 +55,11 @@
                         <div class="row">
                             <div class="col">
                                 <label for="inputName" class="control-label">اسم البنك</label>
-                                <select name="Section" class="form-control SlectBox" onclick="console.log($(this).val())"
+                                <select name="section_id" class="form-control SlectBox" onclick="console.log($(this).val())"
                                     onchange="console.log('change is firing')" readonly>
                                     <!--placeholder-->
-                                    <option value=" {{ $invoices->section->id }}">
-                                        {{ $invoices->section->section_name }}
+                                    <option value="{{ $invoices->sections->id }}">
+                                        {{ $invoices->sections->section_name }}
                                     </option>
 
                                 </select>
@@ -65,8 +67,8 @@
 
                             <div class="col">
                                 <label for="inputName" class="control-label">اسم العميل</label>
-                                <select id="product" name="product" class="form-control" readonly>
-                                    <option value="{{ $invoices->product }}"> {{ $invoices->product }}</option>
+                                <select id="product" name="product_name" class="form-control" readonly>
+                                    <option value="{{ $invoices->product_name }}"> {{ $invoices->product_name }}</option>
                                 </select>
                             </div>
 
@@ -94,7 +96,7 @@
                                 <label for="inputName" class="control-label">الخصم</label>
                                 <input type="text" class="form-control form-control-lg" id="Discount" name="Discount"
                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                                    value="{{ $invoices->Discount }}" required readonly>
+                                    value="{{ $invoices->Discount_Commission }}" required readonly>
                             </div>
 
                             <div class="col">
@@ -140,6 +142,7 @@
                                     <option selected="true" disabled="disabled">-- حدد حالة الدفع --</option>
                                     <option value="مدفوعة">مدفوعة</option>
                                     <option value="مدفوعة جزئيا">مدفوعة جزئيا</option>
+                                    <option value="غير مدفوعة">غير مدفوعة</option>
                                 </select>
                             </div>
 
@@ -148,7 +151,6 @@
                                 <input class="form-control fc-datepicker" name="Payment_Date" placeholder="YYYY-MM-DD"
                                     type="text" value="{{ date('Y/m/d h:m:s') }}" required>
                             </div>
-
 
                         </div><br>
 

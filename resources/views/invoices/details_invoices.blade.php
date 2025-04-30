@@ -1,360 +1,303 @@
 @extends('layouts.master')
 @section('title')
-    القسم
+    تفاصيل الفاتورة
 @stop
 @section('css')
-    <!---Internal  Prism css-->
-    <link href="{{ URL::asset('assets/plugins/prism/prism.css') }}" rel="stylesheet">
-    <!---Internal Input tags css-->
-    <link href="{{ URL::asset('assets/plugins/inputtags/inputtags.css') }}" rel="stylesheet">
-    <!--- Custom-scroll -->
-    <link href="{{ URL::asset('assets/plugins/custom-scroll/jquery.mCustomScrollbar.css') }}" rel="stylesheet">
     <!-- Internal Data table css -->
-    <link href="{{ URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
-    <link href="{{ URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" />
-    <link href="{{ URL::asset('assets/plugins/datatable/css/jquery.dataTables.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.dataTables.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
+    @vite('resources/css/invoice/add_invoice.css')
+
 @endsection
 @section('page-header')
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الفواتير</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    قائمة الفواتير</span> <span class="text-muted mt-1 tx-13 mr-2 mb-0">/ القسم</span>
+                <h4 class="content-title mb-0 my-auto">الفواتير</h4>
+                <span class="text-muted mt-1 tx-13 mr-2 mb-0">/ تفاصيل الفاتورة</span>
             </div>
         </div>
-
     </div>
     <!-- breadcrumb -->
 @endsection
 @section('content')
-    <!-- row opened -->
+    <!-- row -->
     <div class="row row-sm">
-        <div class="col-xl-12  p-1">
-            <!-- div -->
-            <div class="card mg-b-20" id="tabs-style2">
+        <div class="col-xl-12">
+            <div class="card">
                 <div class="card-body">
-                    <div class="main-content-label mg-b-20">
-                        استعلام
-                    </div>
-                    {{-- <p class="mg-b-20">It is Very Easy to Customize and it uses in your website apllication.</p> --}}
-                    <div class="text-wrap">
-                        <div class="example">
-                            <div class="panel panel-primary tabs-style-2">
-                                <div class=" tab-menu-heading">
-                                    <div class="tabs-menu1">
-                                        <!-- Tabs -->
-                                        <ul class="nav panel-tabs main-nav-line">
-                                            <li><a href="#tab4" class="nav-link active" data-toggle="tab">التفاصيل</a>
-                                            </li>
-                                            <li><a href="#tab6" class="nav-link" data-toggle="tab">حالات الدفع</a></li>
-                                            <li><a href="#tab5" class="nav-link" data-toggle="tab">المرفقات</a></li>
-                                        </ul>
+                    <div class="panel panel-primary tabs-style-2">
+                        <div class="tab-menu-heading">
+                            <div class="tabs-menu1">
+                                <ul class="nav panel-tabs main-nav-line">
+                                    <li>
+                                        <a href="#tab4" class="nav-link active" data-toggle="tab">
+                                            <i class="fas fa-info-circle ml-1"></i> التفاصيل
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab6" class="nav-link" data-toggle="tab">
+                                            <i class="fas fa-money-bill-wave ml-1"></i> حالات الدفع
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab5" class="nav-link" data-toggle="tab">
+                                            <i class="fas fa-paperclip ml-1"></i> المرفقات
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel-body tabs-menu-body main-content-body-right border-top-0">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab4">
+                                    <div class="card card-invoice">
+                                        <div class="invoice-header">
+                                            <h1 class="invoice-title">فاتورة #{{ $invoice->id }}</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="billed-to p-3 bg-light rounded">
+                                                        <h6 class="font-weight-bold text-primary">معلومات العميل</h6>
+                                                        <p class="mb-1"><strong>الاسم:</strong>
+                                                            {{ $invoice->product_name }}</p>
+                                                        <p class="mb-1"><strong>العنوان:</strong>
+                                                            {{ $invoices_details_address->address ?? 'غير محدد' }}</p>
+                                                        <p class="mb-1"><strong>الهاتف:</strong>
+                                                            {{ $invoices_details_address->phone ?? 'غير محدد' }}</p>
+                                                        <p class="mb-0"><strong>البريد الإلكتروني:</strong>
+                                                            {{ $invoices_details_address->email ?? 'غير محدد' }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="invoice-info p-3 bg-light rounded">
+                                                        <h6 class="font-weight-bold text-primary">معلومات الفاتورة</h6>
+                                                        <p class="mb-1"><strong>تاريخ الفاتورة:</strong>
+                                                            {{ $invoice->invoice_Date ?? 'غير محدد' }}</p>
+                                                        <p class="mb-1"><strong>تاريخ الاستحقاق:</strong>
+                                                            {{ $invoice->Due_date ?? 'غير محدد' }}</p>
+                                                        <p class="mb-1"><strong>حالة الدفع:</strong>
+                                                            @if ($invoice->Value_Status == 1)
+                                                                <span class="badge badge-success">مدفوع</span>
+                                                            @elseif ($invoice->Value_Status == 2)
+                                                                <span class="badge badge-danger">غير مدفوع</span>
+                                                            @elseif ($invoice->Value_Status == 3)
+                                                                <span class="badge badge-warning">مدفوع جزئيًا</span>
+                                                            @else
+                                                                <span class="badge badge-secondary">غير محدد</span>
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive mt-4">
+                                                <table class="table table-invoice">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="wd-20p">البند</th>
+                                                            <th class="wd-60p">القيمة</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>تاريخ الدفع</td>
+                                                            <td>{{ $invoice->updated_at ?? 'غير محدد' }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>اسم القسم</td>
+                                                            <td>{{ $invoice->section?->section_name ?? 'غير محدد' }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>مبلغ التحصيل</td>
+                                                            <td>{{ number_format($invoice->Amount_collection ?? 0, 2) }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>مبلغ العمولة</td>
+                                                            <td>{{ number_format($invoice->Amount_Commission ?? 0, 2) }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>الخصم</td>
+                                                            <td>{{ number_format($invoice->Discount ?? 0, 2) }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>نسبة الضريبة</td>
+                                                            <td>{{ $invoice->Rate_VAT ?? 0 }}%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>قيمة الضريبة</td>
+                                                            <td>{{ number_format($invoice->Value_VAT ?? 0, 2) }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="font-weight-bold text-primary">الإجمالي</td>
+                                                            <td class="font-weight-bold text-primary">
+                                                                {{ number_format($invoice->Total ?? 0, 2) }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="notes-section mt-4 p-3 bg-light rounded">
+                                                <h6 class="font-weight-bold text-primary">ملاحظات</h6>
+                                                <p>{{ $invoice->note ?? 'لا يوجد ملاحظات' }}</p>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between mt-4">
+                                                <div>
+                                                    @if ($invoice->Value_Status != 1)
+                                                        <a href="{{ URL::route('Status_show', [$invoice->id]) }}"
+                                                            class="btn btn-primary-gr   adient">
+                                                            <i class="fas fa-money-bill-wave ml-1"></i> دفع الآن
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <a href="{{ route('invoices.print', $invoice->id) }}" target="_blank"
+                                                        class="btn btn-print text-white">
+                                                        <i class="fas fa-print ml-1"></i> طباعة الفاتورة
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="panel-body tabs-menu-body main-content-body-right border">
-                                    <div class="tab-content">
-                                        <div class="tab-pane active " id="tab4">
 
-                                            <!-- row -->
-                                            <div class="row row-sm">
-                                                <div class="col-md-12 col-xl-12">
-                                                    <div class="main-content-body-invoice">
-                                                        <div class="card card-invoice">
-                                                            <div class="card-body">
-                                                                <div class="invoice-header">
-                                                                    <h1 class="invoice-title">فاتورة</h1>
-
-                                                                </div><!-- invoice-header -->
-                                                                <div class="row mg-t-20">
-                                                                    <div class="col-md">
-                                                                        <label class="tx-gray-600">العميل</label>
-                                                                        <div class="billed-to">
-                                                                            <h6> {{ $invoice->product }}</h6>
-                                                                            <p>العنوان: {{ $invoice->address }}<br>
-                                                                                هاتف: {{ $invoice->phone }}<br>
-                                                                                البريد الإلكتروني: {{ $invoice->email }}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md">
-                                                                        <label class="tx-gray-600">معلومات الفاتورة</label>
-                                                                        <p class="invoice-info-row"><span>رقم
-                                                                                الفاتورة</span>
-                                                                            <span>{{ $invoice->invoice_number }}</span>
-                                                                        </p>
-                                                                        <p class="invoice-info-row"><span>تاريخ
-                                                                                الفاتورة</span>
-                                                                            <span>{{ $invoice->invoice_Date ?? 'غير محدد' }}</span>
-                                                                        </p>
-                                                                        <p class="invoice-info-row"><span>تاريخ
-                                                                                الاستحقاق</span>
-                                                                            <span>{{ $invoice->Due_date ?? 'غير محدد' }}</span>
-                                                                        </p>
-                                                                        <p class="invoice-info-row"><span>حالة الدفع</span>
-                                                                            <span>
-                                                                                @if ($invoice->Value_Status == 1)
-                                                                                    <span
-                                                                                        class="badge bg-success text-white">مدفوع</span>
-                                                                                @elseif ($invoice->Value_Status == 2)
-                                                                                    <span
-                                                                                        class="badge bg-danger text-white">غير
-                                                                                        مدفوع</span>
-                                                                                @elseif ($invoice->Value_Status == 3)
-                                                                                    <span
-                                                                                        class="badge bg-warning text-dark">مدفوع
-                                                                                        جزئيًا</span>
-                                                                                @else
-                                                                                    <span class="badge bg-secondary">غير
-                                                                                        محدد</span>
-                                                                                @endif
-                                                                            </span>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="table-responsive mg-t-40">
-                                                                    <table
-                                                                        class="table table-invoice border text-md-nowrap mb-0">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th class="wd-20p">البند</th>
-                                                                                <th class="wd-60p">القيمة</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td>تاريخ الدفع</td>
-                                                                                <td>{{ $invoice->Payment_Date ?? 'غير محدد' }}
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>اسم العميل</td>
-                                                                                <td>{{ $invoice->product }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>اسم البنك</td>
-                                                                                <td>{{ $invoice->section?->section_name ?? 'قسم غير معروف' }}
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>مبلغ التحصيل</td>
-                                                                                <td>{{ $invoice->Amount_collection ?? 0 }}
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>مبلغ العمولة</td>
-                                                                                <td>{{ $invoice->Amount_Commission ?? 0 }}
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>الخصم</td>
-                                                                                <td>{{ $invoice->Discount ?? 0 }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>نسبة الضريبة</td>
-                                                                                <td>{{ $invoice->Rate_VAT ?? 0 }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>قيمة الضريبة</td>
-                                                                                <td>{{ $invoice->Value_VAT ?? 0 }}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td
-                                                                                    class="tx-right tx-uppercase tx-bold tx-inverse">
-                                                                                    الإجمالي</td>
-                                                                                <td class="tx-right">
-                                                                                    <h4 class="tx-primary tx-bold">
-                                                                                        {{ $invoice->Total ?? 0 }}</h4>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="mg-t-40">
-                                                                    <div class="invoice-notes">
-                                                                        <label
-                                                                            class="main-content-label tx-13">ملاحظات</label>
-                                                                        <p>{{ $invoice->note ?? 'لا يوجد ملاحظات' }}</p>
-                                                                    </div>
-                                                                </div>
-                                                                <hr class="mg-b-40">
-                                                                <div class="d-flex">
-                                                                    <a href="{{ route('invoices.print', $invoice->id) }}" target="_blank" class="btn btn-primary ml-auto">
-                                                                        <i class="fas fa-print ml-1"></i> طباعة
-                                                                    </a>
-
-                                                                    @if ($invoice->Value_Status != 1)
-                                                                        <a href="{{ URL::route('Status_show', [$invoice->id]) }}"
-                                                                            class="btn btn-purple mr-2">
-                                                                            <i class="fas fa-money-bill-wave ml-1"></i> دفع
-                                                                            الآن
-                                                                        </a>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- COL-END -->
-                                            </div>
-                                            <!-- row closed -->
+                                <div class="tab-pane" id="tab6">
+                                    <div class="card">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5 class="mb-0">سجل حالات الدفع</h5>
                                         </div>
-                                        <div class="tab-pane" id="tab6">
-                                            <div class="card-body p-0 m-0">
-                                                <div class="table-responsive">
-                                                    <table id="example1" class="table key-buttons text-md-nowrap">
-                                                        <thead>
-                                                            <tr class="text-center">
-                                                                <th>#</th>
-                                                                <th>رقم الفاتورة</th>
-                                                                <th>المنتج</th>
-                                                                <th>القسم</th>
-                                                                <th>الحالة</th>
-                                                                <th>قيمة الحالة</th>
-                                                                <th>تاريخ الدفع</th>
-                                                                <th>ملاحظات</th>
-                                                                <th>المستخدم</th>
-                                                                <th>تاريخ الإنشاء</th>
-                                                                <th>تاريخ التحديث</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="text-center">
-                                                            @foreach ($invoices_details as $index => $invoice)
-                                                                <tr>
-                                                                    <td>{{ $index + 1 }}</td>
-                                                                    <td>{{ $invoice->invoice_number ?? 'غير متوفر' }}</td>
-                                                                    <td>{{ $invoice->product ?? '-' }}</td>
-                                                                    <td>{{ $invoice->Section ?? '-' }}</td>
-
-                                                                    {{-- شرط الحالة مع تلوين حسب القيمة --}}
-                                                                    <td>
-                                                                        @if ($invoice->Value_Status == 1)
-                                                                            <span
-                                                                                class="badge bg-success text-white">{{ $invoice->Status ?? 'مدفوع' }}</span>
-                                                                        @elseif($invoice->Value_Status == 2)
-                                                                            <span
-                                                                                class="badge bg-danger text-white">{{ $invoice->Status ?? 'غير مدفوع' }}</span>
-                                                                        @elseif($invoice->Value_Status == 3)
-                                                                            <span
-                                                                                class="badge bg-warning text-dark">{{ $invoice->Status ?? 'مدفوع جزئيًا' }}</span>
-                                                                        @else
-                                                                            <span class="badge bg-secondary">غير
-                                                                                محدد</span>
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>{{ $invoice->Value_Status ?? '-' }}</td>
-
-                                                                    <td>{{ $invoice->Payment_Date ?? 'غير محدد' }}</td>
-                                                                    <td>{{ $invoice->note ?? '-' }}</td>
-                                                                    <td>{{ $invoice->user ?? '-' }}</td>
-                                                                    <td>{{ $invoice->created_at ?? '-' }}</td>
-                                                                    @if ($invoice->updated_at == $invoice->created_at)
-                                                                        <td>لم يحدث</td>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered w-100" id="payment-status-table">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>المنتج</th>
+                                                            <th>القسم</th>
+                                                            <th>الحالة</th>
+                                                            <th>تاريخ الدفع</th>
+                                                            <th>ملاحظات</th>
+                                                            <th>المستخدم</th>
+                                                            <th>تاريخ التحديث</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($invoices_details as $index => $detail)
+                                                            <tr>
+                                                                <td>{{ $index + 1 }}</td>
+                                                                <td>{{ $detail->product_name ?? '-' }}</td>
+                                                                <td>{{ $detail->section_name ?? '-' }}</td>
+                                                                <td>
+                                                                    @if ($detail->Value_Status == 1)
+                                                                        <span
+                                                                            class="badge badge-success">{{ $detail->Status ?? 'مدفوع' }}</span>
+                                                                    @elseif($detail->Value_Status == 2)
+                                                                        <span
+                                                                            class="badge badge-danger">{{ $detail->Status ?? 'غير مدفوع' }}</span>
+                                                                    @elseif($detail->Value_Status == 3)
+                                                                        <span
+                                                                            class="badge badge-warning">{{ $detail->Status ?? 'مدفوع جزئيًا' }}</span>
                                                                     @else
-                                                                        <td>{{ $invoice->updated_at ?? '-' }}</td>
+                                                                        <span class="badge badge-secondary">غير محدد</span>
                                                                     @endif
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-
-                                                </div>
+                                                                </td>
+                                                                <td>{{ $detail->Payment_Date ?? 'غير محدد' }}</td>
+                                                                <td>{{ $detail->note ?? '-' }}</td>
+                                                                <td>{{ $detail->user ?? '-' }}</td>
+                                                                <td>{{ $detail->updated_at ?? '-' }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                        <div class="tab-pane " id="tab5">
-                                            <!--المرفقات-->
-                                            <div class="card card-statistics">
-                                                {{-- @can('اضافة مرفق') --}}
-                                                <div class="card-body">
-                                                    <p class="text-danger">* صيغة المرفق pdf, jpeg ,.jpg , png </p>
-                                                    <h5 class="card-title">اضافة مرفقات</h5>
-                                                    <form method="post" action="{{ url('/InvoiceAttachments') }}"
-                                                        enctype="multipart/form-data">
-                                                        {{ csrf_field() }}
-                                                        <div class="custom-file">
-                                                            <input type="file" class="custom-file-input"
-                                                                id="customFile" name="file_name" required>
-                                                            <input type="hidden" name="invoice_number"
-                                                                value="{{ $invoice->invoice_number }}">
-                                                            <input type="hidden" id="invoice_id" name="invoice_id"
-                                                                value="{{ $invoice->id }}">
-                                                            <label class="custom-file-label" for="customFile">حدد
-                                                                المرفق</label>
+                                    </div>
+                                </div>
 
-                                                        </div><br><br>
-                                                        <button type="submit" class="btn btn-primary btn-sm "
-                                                            name="uploadedFile">تاكيد</button>
-                                                    </form>
-                                                </div>
-                                                {{-- @endcan --}}
-                                                <br>
-                                                <div class="card-body p-0 m-0">
-                                                    <div class="table-responsive">
-                                                        <table id="example1" class="table key-buttons text-md-nowrap">
-                                                            <thead>
-                                                                <tr class="text-center">
-                                                                    <th class="border-bottom-0">#</th>
-                                                                    <th class="border-bottom-0">اسم الملف</th>
-                                                                    <th class="border-bottom-0">رقم الفاتورة</th>
-                                                                    <th class="border-bottom-0">أنشئت بواسطة</th>
-                                                                    <th class="border-bottom-0">معرّف الفاتورة</th>
-                                                                    <th class="border-bottom-0">تاريخ الإنشاء</th>
-                                                                    <th class="border-bottom-0">العمليات</th>
-                                                                    <!-- عمود العمليات -->
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="text-center">
-                                                                @foreach ($attachments as $index => $invoice)
-                                                                    <tr>
-                                                                        <td>{{ $index + 1 }}</td>
-                                                                        <td>
-                                                                            <a href="{{ url('Attachments/' . $invoice->invoice_number . '/' . $invoice->file_name) }}"
-                                                                                target="_blank">
-                                                                                {{ $invoice->file_name }}
-                                                                            </a>
-                                                                        </td>
-                                                                        <td>{{ $invoice->invoice_number ?? 'غير متوفر' }}
-                                                                        </td>
-                                                                        <td>{{ $invoice->Created_by ?? 'غير متوفر' }}</td>
-                                                                        <td>{{ $invoice->invoice_id ?? 'غير متوفر' }}</td>
-                                                                        <td>{{ $invoice->created_at ?? 'غير متوفر' }}</td>
-                                                                        <td> <!-- عمود الأزرار -->
-                                                                            <!-- زر العرض -->
-                                                                            <a href="{{ url('Attachments/' . $invoice->invoice_number . '/' . $invoice->file_name) }}"
-                                                                                target="_blank"
-                                                                                class="btn btn-info btn-sm">
-                                                                                عرض
-                                                                            </a>
-
-                                                                            <!-- زر التحميل -->
-                                                                            <a href="{{ url('Attachments/' . $invoice->invoice_number . '/' . $invoice->file_name) }}"
-                                                                                download class="btn btn-primary btn-sm">
-                                                                                تحميل
-                                                                            </a>
-
-                                                                            <!-- زر الحذف -->
-                                                                            <form
-                                                                                action="{{ route('attachments.destroy', $invoice->id) }}"
-                                                                                method="POST"
-                                                                                id="delete-form-{{ $invoice->id }}"
-                                                                                style="display: inline;">
-                                                                                @csrf
-                                                                                @method('DELETE')
-                                                                                <button type="button"
-                                                                                    class="btn btn-danger btn-sm"
-                                                                                    onclick="confirmDelete({{ $invoice->id }})">
-                                                                                    حذف
-                                                                                </button>
-                                                                            </form>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
+                                <div class="tab-pane" id="tab5">
+                                    <div class="card">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5 class="mb-0">مرفقات الفاتورة</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="file-upload-container mb-4">
+                                                <p class="text-danger">* صيغة المرفق pdf, jpeg, .jpg, png</p>
+                                                <h5 class="card-title">إضافة مرفقات</h5>
+                                                <form method="post" action="{{ route('attachments.store') }}"
+                                                    enctype="multipart/form-data" class="mt-3">
+                                                    @csrf
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" id="customFile"
+                                                            name="file_name" required>
+                                                        <input type="hidden" name="invoice_id"
+                                                            value="{{ $invoice->id }}">
+                                                        <label class="custom-file-label" for="customFile">اختر
+                                                            الملف</label>
                                                     </div>
-                                                </div>
+                                                    <button type="submit" class="btn btn-primary-gradient mt-3"
+                                                        name="uploadedFile">
+                                                        <i class="fas fa-upload ml-1"></i> رفع الملف
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered w-100" id="attachments-table">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>اسم الملف</th>
+                                                            <th>تاريخ الإنشاء</th>
+                                                            <th>بواسطة</th>
+                                                            <th class="text-center">العمليات</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($attachments as $index => $attachment)
+                                                            <tr>
+                                                                <td>{{ $index + 1 }}</td>
+                                                                <td>
+                                                                    <a href="{{ url('Attachments/' . $attachment->invoice_number . '/' . $attachment->file_name) }}"
+                                                                        target="_blank">
+                                                                        {{ $attachment->file_name }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>{{ $attachment->created_at }}</td>
+                                                                <td>{{ $attachment->Created_by }}</td>
+                                                                <td class="d-flex justify-content-center"
+                                                                    style="gap: 0.5rem;">
+                                                                    <a href="{{ url('Attachments/' . $attachment->invoice_number . '/' . $attachment->file_name) }}"
+                                                                        target="_blank" class="btn btn-sm btn-info">
+                                                                        <i class="fas fa-eye"></i> عرض
+                                                                    </a>
+                                                                    <a href="{{ url('Attachments/' . $attachment->invoice_number . '/' . $attachment->file_name) }}"
+                                                                        download class="btn btn-sm btn-primary">
+                                                                        <i class="fas fa-download"></i> تحميل
+                                                                    </a>
+                                                                    @can('حذف المرفق')
+                                                                        <form
+                                                                            action="{{ route('attachments.destroy', $attachment->id) }}"
+                                                                            method="POST" style="display: inline;">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit"
+                                                                                class="btn btn-sm btn-danger"
+                                                                                onclick="return confirm('هل أنت متأكد من حذف هذا المرفق؟')">
+                                                                                <i class="fas fa-trash"></i> حذف
+                                                                            </button>
+                                                                        </form>
+                                                                    @endcan
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -363,33 +306,13 @@
                         </div>
                     </div>
                 </div>
-                <!---Prism Pre code-->
             </div>
-            <!-- /div -->
         </div>
     </div>
-
+    <!-- row closed -->
 @endsection
+
 @section('js')
-    <!--Internal  Datepicker js -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script src="{{ URL::asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
-    <!-- Internal Select2 js-->
-    <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-    <!-- Internal Jquery.mCustomScrollbar js-->
-    <script src="{{ URL::asset('assets/plugins/custom-scroll/jquery.mCustomScrollbar.concat.min.js') }}"></script>
-    <!-- Internal Input tags js-->
-    <script src="{{ URL::asset('assets/plugins/inputtags/inputtags.js') }}"></script>
-    <!--- Tabs JS-->
-    <script src="{{ URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js') }}"></script>
-    <script src="{{ URL::asset('assets/js/tabs.js') }}"></script>
-    <!--Internal  Clipboard js-->
-    <script src="{{ URL::asset('assets/plugins/clipboard/clipboard.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/clipboard/clipboard.js') }}"></script>
-    <!-- Internal Prism js-->
-    <script src="{{ URL::asset('assets/plugins/prism/prism.js') }}"></script>
-
     <!-- Internal Data tables -->
     <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}"></script>
@@ -407,43 +330,9 @@
     <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
-    <!--Internal  Datatable js -->
-    <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
-    <script>
-        function confirmDelete(invoiceId) {
-            // عرض SweetAlert2 برومبت للتأكيد
-            Swal.fire({
-                title: 'هل أنت متأكد؟',
-                text: 'لن يمكنك استرجاع الملف بعد الحذف!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'نعم، احذف الملف!',
-                cancelButtonText: 'إلغاء',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // إذا وافق المستخدم، يتم إرسال النموذج
-                    document.getElementById('delete-form-' + invoiceId).submit();
-                }
-            });
-        }
-    </script>
-    <script>
-        function printInvoice() {
-            window.print();
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.querySelector('.custom-file-input');
-            const fileLabel = document.querySelector('.custom-file-label');
 
-            fileInput.addEventListener('change', function() {
-                if (fileInput.files.length > 0) {
-                    fileLabel.textContent = fileInput.files[0].name;
-                }
-            });
-        });
-    </script>
-
-
+    <!-- Internal Select2 js-->
+    <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
+    @vite('resources/js/invoice/details_invoices.js')
 
 @endsection
