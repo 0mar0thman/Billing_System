@@ -31,6 +31,10 @@
             display: flex;
             justify-content: space-between;
         }
+
+        .vmap-wrapper {
+            height: auto !important;
+        }
     </style>
 @endsection
 @section('page-header')
@@ -308,36 +312,29 @@
     <div class="row row-sm">
         <div class="col-md-12 col-lg-12 col-xl-7">
             <div class="card">
-                <div class="card-header bg-transparent pd-b-0 pd-t-20 bd-b-0">
+                <div class="card-header bg-transparent pd-b-0 pd-t-20 bd-b-0 col-xl-5">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title mb-0">حالة الفواتير</h4>
-                        <i class="mdi mdi-dots-horizontal text-gray"></i>
                     </div>
-                    <p class="tx-12 text-muted mb-0">إحصائيات تفصيلية عن حالة الفواتير</p>
+                    <p class="tx-12 text-muted mt-2">إحصائيات تفصيلية عن حالة الفواتير</p>
                 </div>
-                <div class="card-body">
-                    <div class="total-revenue">
-                        <div>
-                            <h4>{{ $invoiceStatus['statuses']['مدفوعة']['count'] ?? 0 }}</h4>
-                            <label><span class="bg-primary"></span>مدفوعة</label>
-                        </div>
-                        <div>
-                            <h4>{{ $invoiceStatus['statuses']['غير مدفوعة']['count'] ?? 0 }}</h4>
-                            <label><span class="bg-danger"></span>غير مدفوعة</label>
-                        </div>
-                        <div>
-                            <h4>{{ $invoiceStatus['statuses']['مدفوع جزئيا']['count'] ?? 0 }}</h4>
-                            <label><span class="bg-warning"></span>جزئية</label>
-                        </div>
-                        <div>
-                            <h4>{{ $invoiceStatus['overdue']['count'] }}</h4>
-                            <label><span class="bg-dark"></span>متأخرة</label>
-                        </div>
+
+                <div class="col-xl-12 col-md-12 col-lg-6 mt-2">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <div style="width: 100%; max-width: 600px;">
+                                        {!! $chartjs->render() !!}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                    <div id="bar" class="sales-bar mt-4"></div>
                 </div>
             </div>
         </div>
+
         <div class="col-lg-12 col-xl-5">
             <div class="card card-dashboard-map-one">
                 <label class="main-content-label">توزيع الديون على البنوك</label>
@@ -347,7 +344,7 @@
                         <span>اسم البنك</span>
                         <span>قيمة الدين</span>
                     </div>
-                    @foreach ($bankAnalysis as $bank)
+                    @foreach ($bankAnalysis->take(7) as $bank)
                         <div class="bank-debt-item">
                             <span class="bank-name">{{ $bank['name'] }}</span>
                             <span class="debt-amount">{{ number_format($bank['debt'], 2) }} ج</span>
@@ -451,13 +448,37 @@
                 </div>
             </div>
         </div>
+
         <div class="col-xl-4 col-md-12 col-lg-6">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h3 class="card-title mb-2">آخر الفواتير المدفوعة</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @foreach (\App\Models\Invoice::where('Value_Status', 1)->latest()->take(5)->get() as $invoice)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="tx-medium">#{{ $invoice->id }}</span>
+                                    <span
+                                        class="tx-12 d-block">{{ $invoice->products->product_name ?? 'غير محدد' }}</span>
+                                </div>
+                                <span class="badge badge-success">{{ number_format($invoice->Total, 2) }} ج</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-sm">
+        <div class="col-xl-12 col-md-12 col-lg-6">
             <div class="card">
                 <div class="card-header pb-0">
                     <h3 class="card-title mb-2">أحدث الفواتير</h3>
                     <p class="tx-12 mb-3 text-muted">آخر 5 فواتير تم إضافتها للنظام</p>
                 </div>
-                <div class="card-body sales-info ot-0 pt-0 pb-0">
+                <div class="card-body sales-info ot-0 pt-0 pb-2">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered mb-0">
                             <thead>
@@ -488,25 +509,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-            <div class="card mt-3">
-                <div class="card-header pb-0">
-                    <h3 class="card-title mb-2">آخر الفواتير المدفوعة</h3>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        @foreach (\App\Models\Invoice::where('Value_Status', 1)->latest()->take(5)->get() as $invoice)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="tx-medium">#{{ $invoice->id }}</span>
-                                    <span
-                                        class="tx-12 d-block">{{ $invoice->products->product_name ?? 'غير محدد' }}</span>
-                                </div>
-                                <span class="badge badge-success">{{ number_format($invoice->Total, 2) }} ج</span>
-                            </li>
-                        @endforeach
-                    </ul>
                 </div>
             </div>
         </div>

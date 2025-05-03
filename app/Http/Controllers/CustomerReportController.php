@@ -43,7 +43,6 @@ class CustomerReportController extends Controller
             $sections = Section::all();
             return view('reports.customers_report', compact('invoices', 'sections', 'start_at', 'end_at'));
         }
-        // return $request ;
     }
 
 

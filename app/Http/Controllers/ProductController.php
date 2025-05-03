@@ -28,15 +28,15 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'product_name' => 'required|max:255',
-            'description' => 'required',
+            // 'description' => 'required',
         ], [
             'product_name.required' => 'يجب ادخال القسم ',
-            'description.required' => 'يجب ادخال وصف القسم',
+            // 'description.required' => 'يجب ادخال وصف القسم',
         ]);
 
         Product::create([
             'product_name' => $request->product_name,
-            'description' => $request->description,
+            'description' => $request->description ?? 'لا توجد ملاحظات',
             'section_id' => $request->section_id,
             'phone' => $request->phone,
             'address' => $request->address,

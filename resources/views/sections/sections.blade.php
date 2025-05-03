@@ -72,7 +72,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5>قائمة البنوك</h5>
                         @can('اضافة قسم')
-                            <a class="btn btn-outline-primary" data-effect="effect-scale" data-toggle="modal"
+                            <a class="btn btn-outline-info" data-effect="effect-scale" data-toggle="modal"
                                 href="#modaldemo8">
                                 <i class="fas fa-plus ml-1"></i> اضافة بنك
                             </a>

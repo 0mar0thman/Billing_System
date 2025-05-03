@@ -14,6 +14,7 @@ use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceAchiveController;
 use App\Http\Controllers\InvoiceReportController;
 use App\Http\Controllers\CustomerReportController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Validation\Rules\Can;
 
 // الصفحة الرئيسية وتوجيهات المصادقة
@@ -98,8 +99,38 @@ Route::middleware(['auth', 'user.active'])->group(function () {
     Route::post('Search_customers', [CustomerReportController::class, 'Search_customers'])->name('search_customers');
     // Route::post('Search_customers', [Customers_Report::class, 'Search_customers']);
     Route::get('/section/{id}', [CustomerReportController::class, 'getProducts'])->name('get_products');
-    // Route::get('/section/{id}', 'InvoicesController@getproducts');
 
+    // Route::get('/section/{id}', 'InvoicesController@getproducts');
+    Route::get('/invoice_notification', function () {
+        return view('emails.invoice_notification');
+    });
+
+    Route::post('/notifications/mark-all-as-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('notifications.markAllAsRead');
+
+    // Route::get('/notifications', function () {
+    //     return view('notifications.index', [
+    //         'notifications' => auth()->user()->notifications()->paginate(20)
+    //     ]);
+    // })->name('notifications.index');
+
+
+    // Route::get('/notifications', [NotificationController::class, 'showNotifications'])->name('notifications.index');
+
+    // web.php
+    Route::get('/read-notification/{id}', [NotificationController::class, 'read'])->name('read_notification');
+    Route::get('/mark-all-as-read', [NotificationController::class, 'markAll'])->name('mark_all_notifications');
+
+    // web.php
+    // Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+
+    // في routes/web.php
+    // Route::post('/notifications/{notification}/mark-as-read', 'NotificationController@markAsRead')->name('notifications.mark-as-read');
+    // Route::post('/notifications/mark-all-as-read', 'NotificationController@markAllAsRead')->name('notifications.mark-all-as-read');
+    // Route::get('/notifications/latest', 'NotificationController@latest')->name('notifications.latest');
+    // Route::get('/notifications/check-updates', 'NotificationController@checkUpdates')->name('notifications.check-updates');
 });
 
 // الصفحات الديناميكية (يجب أن تكون في النهاية)

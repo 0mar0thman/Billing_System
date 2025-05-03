@@ -74,7 +74,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5>قائمة العملاء</h5>
                         @can('اضافة منتج')
-                            <a class="btn btn-outline-primary" data-effect="effect-scale" data-toggle="modal" href="#modaldemo">
+                            <a class="btn btn-outline-info  " data-effect="effect-scale" data-toggle="modal" href="#modaldemo">
                                 <i class="fas fa-plus ml-1"></i> اضافة عميل
                             </a>
                         @endcan

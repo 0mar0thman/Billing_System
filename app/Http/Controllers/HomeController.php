@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+
     public function index()
     {
 
@@ -23,21 +24,45 @@ class HomeController extends Controller
             'total_clients' => Product::count(),
             'clients_with_contacts' => Product::whereNotNull('phone')->whereNotNull('email')->count(),
 
-            'total_invoices_week' => Invoice::where('created_at', '>=', now()->subWeek())->count(),
-            'total_invoices_month' => Invoice::where('created_at', '>=', now()->subMonth())->count(),
-
             'total_invoices' => Invoice::count(),
-            'total_invoices_1' => Invoice::where('Value_Status',1)->count(),
-            'total_invoices_2' => Invoice::where('Value_Status',2)->count(),
-            'total_invoices_3' => Invoice::where('Value_Status',3)->count(),
+            'total_invoices_1' => Invoice::where('Value_Status', 1)->count(),
+            'total_invoices_2' => Invoice::where('Value_Status', 2)->count(),
+            'total_invoices_3' => Invoice::where('Value_Status', 3)->count(),
 
-            'total_invoices_week_1' => Invoice::where('created_at', '>=', now()->subWeek())->where('Value_Status', 1)->count(),
-            'total_invoices_week_2' => Invoice::where('created_at', '>=', now()->subWeek())->where('Value_Status', 2)->count(),
-            'total_invoices_week_3' => Invoice::where('created_at', '>=', now()->subWeek())->where('Value_Status', 3)->count(),
+            'total_invoices_week' => Invoice::whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek(),
+            ])->count(),
+            'total_invoices_week_1' => Invoice::whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek(),
+            ])->where('Value_Status', 3)->count(),
+            'total_invoices_week_2' => Invoice::whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek(),
+            ])->where('Value_Status', 3)->count(),
+            'total_invoices_week_3' => Invoice::whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek(),
+            ])->where('Value_Status', 3)->count(),
 
-            'total_invoices_month_1' => Invoice::where('created_at', '>=', now()->subMonth())->where('Value_Status', 1)->count(),
-            'total_invoices_month_2' => Invoice::where('created_at', '>=', now()->subMonth())->where('Value_Status', 2)->count(),
-            'total_invoices_month_3' => Invoice::where('created_at', '>=', now()->subMonth())->where('Value_Status', 3)->count(),
+            'total_invoices_month' => Invoice::whereBetween('created_at', [
+                now()->startOfMonth(),
+                now()->endOfMonth(),
+            ])->count(),
+            'total_invoices_month_1' => Invoice::whereBetween('created_at', [
+                now()->startOfMonth(),
+                now()->endOfMonth(),
+            ])->where('Value_Status', 1)->count(),
+            'total_invoices_month_2' => Invoice::whereBetween('created_at', [
+                now()->startOfMonth(),
+                now()->endOfMonth(),
+            ])->where('Value_Status', 2)->count(),
+            'total_invoices_month_3' => Invoice::whereBetween('created_at', [
+                now()->startOfMonth(),
+                now()->endOfMonth(),
+            ])->where('Value_Status', 3)->count(),
+
             'invoices_with_attachments' => Invoice::with('attachments')->count(),
         ];
 
@@ -59,6 +84,9 @@ class HomeController extends Controller
         // 7. التحليل الزمني
         $timeAnalysis = $this->getTimeAnalysis();
 
+        $chartjs = $this->chartjs();
+
+
         return view('home', compact(
             'stats',
             'invoiceStatus',
@@ -67,7 +95,8 @@ class HomeController extends Controller
             'financialReport',
             'attachmentAnalysis',
             'timeAnalysis',
-            'Invoices'
+            'Invoices',
+            'chartjs'
         ));
     }
 
@@ -249,5 +278,65 @@ class HomeController extends Controller
                     'amount' => $item->total
                 ]];
             });
+    }
+
+    private function chartjs()
+    {
+        $invoices = Invoice::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->selectRaw('Value_Status, COUNT(*) as count')
+            ->groupBy('Value_Status')
+            ->pluck('count', 'Value_Status');
+
+        $invoice = $invoices->sum();
+
+        $culc_invoice_1 = $invoice ? ($invoices[1] ?? 0) / $invoice * 100 : 0;
+        $culc_invoice_2 = $invoice ? ($invoices[2] ?? 0) / $invoice * 100 : 0;
+        $culc_invoice_3 = $invoice ? ($invoices[3] ?? 0) / $invoice * 100 : 0;
+
+        $chartjs =  app()->chartjs
+            ->name('barChartTest')
+            ->type('bar')
+            ->labels(['مدفوعة', 'مدفوعة جزئياً', 'غير مدفوعة', 'الكل'])
+            ->size(['width' => 400, 'height' => 200])
+            ->datasets([
+
+                [
+                    "label" => "مدفوعة",
+                    'backgroundColor' => ['rgba(25, 135, 84, 0.6)'],
+                    'data' => [$culc_invoice_1]
+                ],
+                [
+                    "label" => "مدفوعة جزئي",
+                    'backgroundColor' => ['rgba(255, 193, 7, 0.6)'],
+                    'data' => [$culc_invoice_2]
+                ],
+                [
+                    "label" => "غير مدفوعة",
+                    'backgroundColor' =>  ['rgba(220, 53, 69, 0.6)'],
+                    'data' => [$culc_invoice_3]
+                ],
+                [
+                    "label" => "الكل",
+                    'backgroundColor' => ['rgba(13, 110, 253, 0.6)'],
+                    'data' => [100]
+                ]
+            ]);
+
+        return $chartjs;
+    }
+
+    function getInitials($name)
+    {
+        $parts = explode(' ', trim($name));
+        $count = count($parts);
+
+        if ($count === 1) {
+            return strtoupper(mb_substr($parts[0], 0, 1));
+        } elseif ($count === 2) {
+            return strtoupper(mb_substr($parts[0], 0, 1) . mb_substr($parts[1], 0, 1));
+        } else {
+            return strtoupper(mb_substr($parts[0], 0, 1) . mb_substr($parts[$count - 1], 0, 1));
+        }
+        
     }
 }

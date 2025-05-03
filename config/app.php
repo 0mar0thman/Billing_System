@@ -172,6 +172,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
+
+        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class
     ])->toArray(),
 
     /*

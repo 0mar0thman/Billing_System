@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Notification;
+use App\Notifications\NoteInvoice;
 
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -123,6 +124,7 @@ class InvoiceController extends Controller
                 : 'مدفوع جزئيا');
 
         // إنشاء الفاتورة
+        // $section_name = $invoice->section->name;
         $section_name = Section::where('id', $request->section_id)->value('section_name');
 
         $invoice = Invoice::create([
@@ -144,11 +146,11 @@ class InvoiceController extends Controller
             'Payment_Date' => $request->invoice_Date,
         ]);
 
-        $invoiceId = $invoice->id;
+        $invoice_id = $invoice->id;
 
         // إدخال تفاصيل الفاتورة
         InvoiceDetails::create([
-            'invoice_id' => $invoiceId,
+            'invoice_id' => $invoice_id,
             'product_name' => $request->product_name,
             'section_name' => $section_name,
             'email' => $request->email,
@@ -172,20 +174,28 @@ class InvoiceController extends Controller
             InvoiceAttachments::create([
                 'file_name' => $file_name,
                 'Created_by' => Auth::user()->name,
-                'invoice_id' => $invoiceId,
+                'invoice_id' => $invoice_id,
             ]);
 
             // حفظ الصورة في المجلد المناسب
-            $destinationPath = public_path('Attachments/' . $invoiceId);
+            $destinationPath = public_path('Attachments/' . $invoice_id);
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
             $image->move($destinationPath, $file_name);
         }
 
+
+        $invoices = Invoice::latest()->first();
+        $user = User::where('is_admin', 1)->get();
+        // $user->notify(new NoteInvoice($invoices));
+        Notification::send($user, new NoteInvoice($invoices));
+
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
         return back();
     }
+
+
 
     /**
      * Display the specified resource.
