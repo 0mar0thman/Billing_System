@@ -21,7 +21,7 @@
                 <div class="card-title mb-2">
                     <h4><b>Notifications</b></h4>
                 </div>
-                <div>
+                <div id="notifications_count"> //
                     <h6>تنبيه: {{ auth()->user()->unreadNotifications->count() }}</h6>
                 </div>
                 <a href="{{ route('mark_all_notifications') }}" class="btn btn-sm btn-success w-100"><b>رؤية الكل</b></a>
@@ -37,8 +37,8 @@
             <div class="p-3">
                 <b>Total: {{ auth()->user()->unreadNotifications->count() }}</b>
             </div>
-            <div class="tab-content">
-                <div class="tab-pane active" id="side2">
+            <div class="tab-content" id="unreadNotifications">
+                <div class="tab-pane active" id="side2"> //
                     @forelse(auth()->user()->unreadNotifications as $notification)
                         <div class="list d-flex align-items-center border-bottom p-3">
                             <div class="">
@@ -47,7 +47,6 @@
                                 </span>
                             </div>
                             <a class="wrapper w-100 mr-3" href="{{ route('read_notification', $notification->id) }}">
-
                                 <p class="mb-0 d-flex">
                                     <b>{{ $notification->data['product_name'] ?? 'New Notification' }}</b>
                                 </p>
@@ -74,3 +73,4 @@
     </div>
 </div>
 <!--/Sidebar-right-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

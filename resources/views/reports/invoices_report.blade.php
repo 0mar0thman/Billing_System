@@ -16,6 +16,14 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             margin-bottom: 1.5rem;
         }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        #invoice_number_section {
+            display: none;
+        }
     </style>
 @endsection
 
@@ -88,7 +96,7 @@
                             <div class="col-lg-3 mg-t-20 mg-lg-t-0" id="invoice_number_section">
                                 <p class="mg-b-10">البحث برقم الفاتورة</p>
                                 <input type="text" class="form-control" name="invoice_number"
-                                    value="{{ $invoiceNumber }}">
+                                    value="{{ $invoiceNumber }}" placeholder="أدخل رقم الفاتورة">
                             </div>
 
                             <div class="col-lg-3" id="start_at_section">
@@ -123,6 +131,10 @@
                             <div class="col-sm-1 col-md-1">
                                 <button type="submit" class="btn btn-primary btn-block">بحث</button>
                             </div>
+                            <div class="col-sm-1 col-md-1">
+                                <a href="{{ route('invoices.report') }}" class="btn btn-secondary btn-block">إعادة
+                                    تعيين</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -133,7 +145,8 @@
                             <table id="invoices-table" class="table table-hover table-bordered table-striped">
                                 <thead class="bg-primary text-white">
                                     <tr>
-                                        <th>#</th>
+                                        {{-- <th>#</th> --}}
+                                        <th>رقم الفاتورة</th>
                                         <th>التاريخ</th>
                                         <th>تاريخ الاستحقاق</th>
                                         <th>المنتج</th>
@@ -148,15 +161,16 @@
                                 <tbody>
                                     @foreach ($invoices as $invoice)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $invoice->invoice_Date}}</td>
+                                            <td>{{ $invoice->id }}</td>
+                                            {{-- <td>{{ $invoice->invoice_number }}</td> --}}
+                                            <td>{{ $invoice->invoice_Date }}</td>
                                             <td>{{ $invoice->Due_date }}</td>
-                                            <td>{{ $invoice->product_name }}</td>
                                             <td>
                                                 <a href="{{ route('invoices.details', $invoice->id) }}">
-                                                    {{ $invoice->sections->section_name }}
+                                                    {{ $invoice->product_name }}
                                                 </a>
                                             </td>
+                                            <td>{{ $invoice->sections->section_name }}</td>
                                             <td>{{ number_format($invoice->Discount_commition, 2) }}</td>
                                             <td>{{ number_format($invoice->Value_VAT, 2) }} ({{ $invoice->Rate_VAT }}%)
                                             </td>
@@ -176,13 +190,15 @@
                                 </tbody>
                             </table>
                         @else
-                            <div class="alert alert-info">
-                                @if ($searchType == 2)
-                                    لم يتم العثور على فاتورة بالرقم: {{ $invoiceNumber }}
-                                @else
+                            @if ($searchType == 2 && request()->isMethod('post'))
+                                <div class="alert alert-danger">
+                                    <strong>خطأ!</strong> لم يتم العثور على فاتورة بالرقم: {{ $invoiceNumber }}
+                                </div>
+                            @elseif(request()->isMethod('post'))
+                                <div class="alert alert-info">
                                     لا توجد فواتير متطابقة مع معايير البحث
-                                @endif
-                            </div>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -193,43 +209,83 @@
 
 @section('js')
     <!-- Internal Data tables -->
-<!-- Internal Data tables -->
-<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/responsive.dataTables.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/pdfmake.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
-<!--Internal  Datatable js -->
-<script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.dataTables.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.dataTables.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/pdfmake.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js') }}"></script>
+    <!--Internal  Datatable js -->
+    <script src="{{ URL::asset('assets/js/table-data.js') }}"></script>
 
-<!--Internal  Datepicker js -->
-<script src="{{ URL::asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
-<!--Internal  jquery.maskedinput js -->
-<script src="{{ URL::asset('assets/plugins/jquery.maskedinput/jquery.maskedinput.js') }}"></script>
-<!--Internal  spectrum-colorpicker js -->
-<script src="{{ URL::asset('assets/plugins/spectrum-colorpicker/spectrum.js') }}"></script>
-<!-- Internal Select2.min js -->
-<script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-<!--Internal Ion.rangeSlider.min js -->
-<script src="{{ URL::asset('assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
-<!--Internal  jquery-simple-datetimepicker js -->
-<script src="{{ URL::asset('assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js') }}"></script>
-<!-- Ionicons js -->
-<script src="{{ URL::asset('assets/plugins/jquery-simple-datetimepicker/jquery.simple-dtpicker.js') }}"></script>
-<!--Internal  pickerjs js -->
-<script src="{{ URL::asset('assets/plugins/pickerjs/picker.min.js') }}"></script>
-<!-- Internal form-elements js -->
-<script src="{{ URL::asset('assets/js/form-elements.js') }}"></script>
+    <!--Internal  Datepicker js -->
+    <script src="{{ URL::asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
+    <!--Internal  jquery.maskedinput js -->
+    <script src="{{ URL::asset('assets/plugins/jquery.maskedinput/jquery.maskedinput.js') }}"></script>
+    <!--Internal  spectrum-colorpicker js -->
+    <script src="{{ URL::asset('assets/plugins/spectrum-colorpicker/spectrum.js') }}"></script>
+    <!-- Internal Select2.min js -->
+    <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
 
-@vite('resources/js/reports/invoices_report.js')
+    <script>
+        $(document).ready(function() {
+            // إظهار/إخفاء الأقسام حسب نوع البحث
+            function toggleSearchSections() {
+                if ($('input[name="rdio"]:checked').val() == '1') {
+                    $('#type_section').show();
+                    $('#invoice_number_section').hide();
+                    $('#start_at_section').show();
+                    $('#end_at_section').show();
+                } else {
+                    $('#type_section').hide();
+                    $('#invoice_number_section').show();
+                    $('#start_at_section').hide();
+                    $('#end_at_section').hide();
+                }
+            }
+
+            // تنفيذ عند التحميل
+            toggleSearchSections();
+
+            // تنفيذ عند تغيير نوع البحث
+            $('input[name="rdio"]').change(function() {
+                toggleSearchSections();
+            });
+
+            // تهيئة تاريخ الاختيار
+            $('.fc-datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                regional: "ar"
+            });
+
+            // تهيئة select2
+            $('.select2').select2({
+                placeholder: 'اختر نوع الفاتورة',
+                allowClear: true
+            });
+
+            // تهيئة جدول البيانات
+            $('#invoices-table').DataTable({
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Arabic.json"
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    </script>
 @endsection

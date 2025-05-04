@@ -21,7 +21,7 @@ class NotificationController extends Controller
         $invoiceId = $notification->data['invoice_id'] ?? null;
 
         if ($invoiceId) {
-            return redirect()->route('Status_show', [$invoiceId]);
+            return redirect()->route('invoices.details', [$invoiceId]);
         }
 
         return redirect()->back()->with('error', 'Invoice not found.');

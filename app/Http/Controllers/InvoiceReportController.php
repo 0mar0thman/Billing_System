@@ -80,26 +80,33 @@ class InvoiceReportController extends Controller
     protected function searchByNumber($request)
     {
         $request->validate([
-            'invoice_number' => 'required|string'
+            'rdio' => 'required|in:1,2',
+            'type' => 'required_if:rdio,1',
+            'invoice_number' => 'required_if:rdio,2|string',
+            'start_at' => 'nullable|date',
+            'end_at' => 'nullable|date|after_or_equal:start_at'
+        ], [
+            'type.required_if' => 'حقل نوع الفاتورة مطلوب عند البحث بالنوع',
+            'invoice_number.required_if' => 'حقل رقم الفاتورة مطلوب عند البحث بالرقم'
         ]);
 
-        $invoice = Invoice::with('sections')
-            ->where('invoice_number', $request->invoice_number)
-            ->first();
+        $invoice = Invoice::where('id', $request->invoice_number)   ->first();
 
         if (!$invoice) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['invoice_number' => 'رقم الفاتورة غير موجود']);
         }
+        // dd($invoice);
 
-        return view('reports.invoices_report', [
-            'invoices' => collect([$invoice]),
-            'searchType' => 2,
-            'invoiceNumber' => $request->invoice_number,
-            'type' => '',
-            'startAt' => '',
-            'endAt' => ''
-        ]);
+         return view('reports.invoices_report', [
+        'invoices' => $invoice ? collect([$invoice]) : collect(),
+        'searchType' => 2,
+        'invoiceNumber' => $request->invoice_number,
+        'type' => $request->session()->get('invoice_report.type', ''),
+        'startAt' => $request->session()->get('invoice_report.start_at', ''),
+        'endAt' => $request->session()->get('invoice_report.end_at', '')
+    ]);
+
     }
 }

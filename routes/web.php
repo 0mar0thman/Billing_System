@@ -26,7 +26,7 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-// Auth::routes(['register' => false]); // يمكن تفعيلها لتعطيل التسجيل
+Auth::routes(['register' => false]); // يمكن تفعيلها لتعطيل التسجيل
 
 // المسارات العامة بعد المصادقة
 Route::middleware(['auth', 'user.active'])->group(function () {
@@ -43,8 +43,6 @@ Route::middleware(['auth', 'user.active'])->group(function () {
     Route::get('getProductDetails/{id}', [InvoiceController::class, 'getProductDetails'])->name('getProductDetails');
 
     Route::resource('invoices', InvoiceController::class);
-
-    // Route::get('/invoices', [InvoicesController::class, 'index'])->name('invoices.index');
 
     Route::get('/edit_invoice/{id}', [InvoiceController::class, 'edit']);
     Route::get('/Status_show/{id}', [InvoiceController::class, 'show'])->name('Status_show');
@@ -88,19 +86,14 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::resource('users', AdminController::class);
     });
 
-    // Route::get('invoices_report', [InvoicesReportController::class, 'index']);
-    // Route::post('Search_invoices', [InvoicesReportController::class, 'Search_invoices']);
-
     Route::get('invoices_report', [InvoiceReportController::class, 'index'])->name('invoices.report');
     Route::post('invoices_report/search', [InvoiceReportController::class, 'search'])->name('invoices.report.search');
 
 
     Route::get('customers_report', [CustomerReportController::class, 'index'])->name("customers_report");
     Route::post('Search_customers', [CustomerReportController::class, 'Search_customers'])->name('search_customers');
-    // Route::post('Search_customers', [Customers_Report::class, 'Search_customers']);
     Route::get('/section/{id}', [CustomerReportController::class, 'getProducts'])->name('get_products');
 
-    // Route::get('/section/{id}', 'InvoicesController@getproducts');
     Route::get('/invoice_notification', function () {
         return view('emails.invoice_notification');
     });
@@ -110,28 +103,11 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         return back();
     })->name('notifications.markAllAsRead');
 
-    // Route::get('/notifications', function () {
-    //     return view('notifications.index', [
-    //         'notifications' => auth()->user()->notifications()->paginate(20)
-    //     ]);
-    // })->name('notifications.index');
-
-
-    // Route::get('/notifications', [NotificationController::class, 'showNotifications'])->name('notifications.index');
-
     // web.php
     Route::get('/read-notification/{id}', [NotificationController::class, 'read'])->name('read_notification');
     Route::get('/mark-all-as-read', [NotificationController::class, 'markAll'])->name('mark_all_notifications');
 
-    // web.php
-    // Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
-
-    // في routes/web.php
-    // Route::post('/notifications/{notification}/mark-as-read', 'NotificationController@markAsRead')->name('notifications.mark-as-read');
-    // Route::post('/notifications/mark-all-as-read', 'NotificationController@markAllAsRead')->name('notifications.mark-all-as-read');
-    // Route::get('/notifications/latest', 'NotificationController@latest')->name('notifications.latest');
-    // Route::get('/notifications/check-updates', 'NotificationController@checkUpdates')->name('notifications.check-updates');
+    
 });
 
-// الصفحات الديناميكية (يجب أن تكون في النهاية)
 Route::get('/{page}', [AdminController::class, 'index'])->where('page', '.*');

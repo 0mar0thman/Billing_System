@@ -41,20 +41,37 @@
                         </form>
                     </div>
                 </div>
-                <div class="dropdown main-header-message right-toggle">
-                    <a class="nav-link pr-0" data-toggle="sidebar-left" data-target=".sidebar-left">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="header-icon-svgs" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
-                        <span class="pulse notification-badge" id="unreadCount"
-                            style="display: {{ auth()->user()->unreadNotifications->count() > 0 ? 'block' : 'none' }}"></span>
-                    </a>
-                </div>
+                @can('الاشعارات')
+                    <div class="dropdown main-header-message right-toggle">
+                        <a class="nav-link pr-0" data-toggle="sidebar-left" data-target=".sidebar-left">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="header-icon-svgs" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="3" y1="12" x2="21" y2="12"></line>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <line x1="3" y1="18" x2="21" y2="18"></line>
+                            </svg>
+                            <span class="pulse notification-badge" id="unreadCount"
+                                style="display: {{ auth()->user()->unreadNotifications->count() > 0 ? 'block' : 'none' }}"></span>
+                        </a>
+                    </div>
+                @endcan
             </div>
         </div>
     </div>
 </div>
 <!-- /main-header -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    setInterval(function() {
+        $.get(window.location.href, function(data) {
+            var newDoc = $(data);
+            var newCount = newDoc.find('#unreadCount').length;
+
+            if (newCount > 0) {
+                $('#unreadCount').show();
+            } else {
+                $('#unreadCount').hide();
+            }
+        });
+    }, 10000);
+</script>

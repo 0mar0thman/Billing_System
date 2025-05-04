@@ -1,14 +1,12 @@
 <style>
    .app-sidebar {
-    transition: all 300ms ease-in-out !important;
+    transition: all 300ms ease-in-out;
+    overflow-y: auto;
    }
    .slide-menu {
-    transition: all 300ms ease-in-out !important;
+    transition: all 300ms ease-in-out ;
    }
 
-   @media screen  {
-
-   }
 </style>
 <!-- Font Awesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"

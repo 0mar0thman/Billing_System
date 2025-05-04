@@ -65,9 +65,9 @@
                                                 {{ __('تسجيل الدخول') }}
                                             </button>
 
-                                            <a href="{{ route('register') }}" class="btn btn-main-primary mt-3">
+                                            {{-- <a href="{{ route('register') }}" class="btn btn-main-primary mt-3">
                                                 {{ __('انشاء حساب') }}
-                                            </a>
+                                            </a> --}}
                                         </form>
                                     </div>
                                 </div>

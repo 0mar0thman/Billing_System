@@ -187,15 +187,13 @@ class InvoiceController extends Controller
 
 
         $invoices = Invoice::latest()->first();
-        $user = User::where('is_admin', 1)->get();
-        // $user->notify(new NoteInvoice($invoices));
+        // $user = User::where('is_admin', 1)->get();
+        $user = User::get();
         Notification::send($user, new NoteInvoice($invoices));
 
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
         return back();
     }
-
-
 
     /**
      * Display the specified resource.
